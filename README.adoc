@@ -12,7 +12,27 @@ Perhaps in the future this tool could be integrated on compilation process runni
 
 == Running the tool
 
-Pending...
+If you run the program without params or incorrect params number
+
+----
+    Simple program to generate code to embed files recursivily from a chosen folder.
+
+    It will generate a source file with code to embed the files on folder.
+
+    More info:  https://github.com/jleahred/embed_dir
+
+    Usage:
+        embed_dir  <origin-folder>  <destiny-file>
+
+    where:
+        origin-folder   string is the path to the folder containing the files to embed
+        destiny-file    string is output filename (without .rs extension)
+
+
+    example:
+
+        embed_dir src/public src/embed.rs
+----
 
 
 == Generated code
@@ -47,7 +67,7 @@ gen_get_includes_bytes!("../../http_static/",
 ----
 
 
-The first string indacates the relative position to files from generated source file.
+The first string indicates the relative position to files from generated source file.
 
 [source, rust]
 ----
