@@ -1,30 +1,76 @@
-use std::env;
+use std::path::Path;
 
 
 fn main() {
-    let args: Vec<_> = env::args().collect();
+    let args: Vec<_> = std::env::args().collect();
     if args.len() != 3 {
-        println!("
-    Simple program to generate code to embed files recursivily from a chosen folder.
+        show_usage();
+        return;
+    }
 
-    It will generate a source file with code to embed the files on folder.
+    let path_source2data = get_rel_path(Path::new(&args[1]), Path::new(&args[2]));
+    println!("path_source2data  {:?}", path_source2data);
+
+}
+
+fn get_rel_path(from: &Path, to: &Path) -> std::path::PathBuf {
+    use std::path::PathBuf;
+
+    let get_canon_path = |path: &Path| {
+        path.canonicalize()
+            .expect(&format!("Error getting full path for {}", path.display()))
+    };
+
+    let corig = get_canon_path(from);
+    let cdest = get_canon_path(to);
+
+    let ncommom = corig.iter()
+        .zip(cdest.iter())
+        .take_while(|&(o, d)| o == d)
+        .count();
+
+    let backward = Path::new("..")
+        .iter()
+        .cycle()
+        .take(cdest.iter().count() - ncommom)
+        .collect::<PathBuf>();
+
+    let orig_branch = corig.iter()
+        .skip(3)
+        .collect::<PathBuf>();
+
+    backward.join(orig_branch)
+}
+
+
+fn show_usage() {
+    println!("
+    Simple program to generate code to embed files recursivily from a chosen
+              folder.
+
+    It will generate a source file with code to embed the files on
+              folder.
 
     More info:  https://github.com/jleahred/embed_dir
 
     Usage:
-        embed_dir  <origin-folder>  <destiny-file>
+
+              embed_dir  <origin-folder>  <destiny-file>
 
     where:
-        origin-folder   string is the path to the folder containing the files to embed
-        destiny-file    string is output filename (without .rs extension)
+        origin-folder
+              string is the path to the folder containing the files to embed
+
+              destiny-file    string is rust output filename (you have to write .rs extension)
 
 
-    example:
+
+              example:
 
         embed_dir src/public src/embed.rs
 
-        ");
-    }
+");
+
 }
 
 

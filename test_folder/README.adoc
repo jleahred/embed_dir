@@ -1,0 +1,91 @@
+= Embed-dir for Rust
+
+You have the great macro `include_bytes!` in Rust
+
+But sometimes is not enough. You could need to embed several files, generally in a folder.
+
+In order to automate it, this simple and small tool generates code for you.
+
+[NOTE]
+Perhaps in the future this tool could be integrated on compilation process running `build`
+
+
+== Running the tool
+
+If you run the program without params or incorrect params number
+
+----
+    Simple program to generate code to embed files recursivily from a chosen folder.
+
+    It will generate a source file with code to embed the files on folder.
+
+    More info:  https://github.com/jleahred/embed_dir
+
+    Usage:
+        embed_dir  <origin-folder>  <destiny-file>
+
+    where:
+        origin-folder   string is the path to the folder containing the files to embed
+        destiny-file    string is output filename (without .rs extension)
+
+
+    example:
+
+        embed_dir src/public src/embed.rs
+----
+
+
+== Generated code
+
+This will generate a file per directory as:
+
+[source, rust]
+----
+macro_rules! gen_get_includes_bytes{
+    ($rel_path:expr, $($file:expr),+) => {
+        pub fn get(file_name: &str) -> Option<&'static [u8]> {
+            match file_name {
+                $(
+                    $file => Some(include_bytes!(concat!($rel_path, $file))),
+                )+
+                _ => None,
+            }
+        }
+    }
+}
+
+
+gen_get_includes_bytes!("../../http_static/",
+                        "index.html",
+                        "vendor.85a84fa43ddcf3e9edcc.bundle.js",
+                        "inline.3c2b0a01d63efc5f8551.bundle.js",
+                        "3rdpartylicenses.txt",
+                        "styles.1d8d1a57c0ce5744a7f0.bundle.css",
+                        "polyfills.ab8304790a25edec7f7d.bundle.js",
+                        "main.62636f97cac4fa81eebe.bundle.js",
+                        "doc.png");
+----
+
+
+The first string indicates the relative position to files from generated source file.
+
+[source, rust]
+----
+"../../http_static/",
+----
+
+Next strings are the files (they can be nested on folders) included.
+
+
+== Using the code
+
+
+Quite simple and direct, just call get on the created module with the file name.
+
+[source, rust]
+----
+    match super::http_static2::get("index.html") {
+        Some(content) => content,
+        None => &[] as &'static [u8],
+    }
+----
