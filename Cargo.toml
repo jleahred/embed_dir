@@ -1,6 +1,12 @@
 [package]
 name = "embed_dir"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["maiquel <jleahred@gmail.com>"]
+description = "Small program to generate code to embed a folder in a rust program"
+license = "GPL-3.0"
+homepage = "https://github.com/jleahred/embed_dir"
+repository = "https://github.com/jleahred/embed_dir"
+keywords = ["embed", "http", "include", "dir", "folder"]
+categories = ["tool::embed-files"]
 
 [dependencies]
