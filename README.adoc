@@ -1,5 +1,8 @@
 = Embed-dir for Rust
 
+crate.io package... https://crates.io/crates/embed_dir
+
+
 You have the great macro `include_bytes!` in Rust
 
 But sometimes is not enough. You could need to embed several files, generally in a folder.
@@ -70,7 +73,7 @@ gen_get_includes_bytes!("../../test_folder",
 ----
 
 
-The first string indicates the relative position to files from generated source file.
+The first string on `gen_get_includes_bytes!` indicates the relative position to files from generated source file.
 
 [source, rust]
 ----
